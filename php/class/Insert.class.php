@@ -25,14 +25,14 @@ class Insert {
      *
      * @param string $name User name.
      * @param string $email User e-mail.
-     * @return string User password (without crypt).
+     * @return int User id.
      */
-    public static function addUser(string $name, string $email): string {
+    public static function addUser(string $name, string $email): int {
         $name = Query::getInstance()->real_escape_string($name);
         $email = Query::getInstance()->real_escape_string($email);
 
         $p = Util::randPassword();
-        // TODO: logar essa senha para dar ao usuario
+        // TODO: enviar a senha dele para o e-mail do usuario
         $pass = crypt($p, SALT);
 
         $builder = new SQLBuilder(SQLBuilder::$INSERT);
@@ -41,7 +41,7 @@ class Insert {
 
         Query::getInstance()->exe($builder->__toString());
 
-        return $p;
+        return Query::getInstance()->getInsertId();
     }
 
     /**
