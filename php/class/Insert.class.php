@@ -182,4 +182,27 @@ class Insert {
         Query::getInstance()->exe($builder->__toString());
     }
 
+    // **************************************************************************
+    //                              ESTOQUE
+    // **************************************************************************
+
+    /**
+     * Adds a list of products in the user stock.
+     *
+     * @param array $products Products to add. (containing the user's id)
+     */
+    public static function addProductItem(array $products) {
+        $builder = new SQLBuilder(SQLBuilder::$INSERT);
+        $builder->setTables(['estoque']);
+        foreach ($products as &$p) {
+            if ($p instanceof Product) {
+                $builder->setValues([NULL, $p->getIdUser(), $p->getIdType(), $p->getCod(), $p->getDescription(), $p->getUnit(), $p->getQtd(), $p->getVlUnit(), $p->getVlTotal()]);
+
+                Query::getInstance()->exe($builder->__toString());
+
+                $p->setId(intval(Query::getInstance()->getInsertId()));
+            }
+        }
+    }
+
 }
