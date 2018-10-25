@@ -4,7 +4,7 @@
  * @version 2018, Oct 25.
  */
 
-class Product {
+class Product implements JsonSerializable {
 
     /**
      * @var int Product id.
@@ -20,6 +20,11 @@ class Product {
      * @var int Product type.
      */
     private $id_type;
+
+    /**
+     * @var string
+     */
+    private $type;
 
     /**
      * @var string Code
@@ -55,7 +60,8 @@ class Product {
      * Product constructor.
      *
      * @param int $id_user Id of the user owner of this product.
-     * @param int $id_type Product type.
+     * @param int $id_type Product type id.
+     * @param string $type Product type name.
      * @param string $cod Product code.
      * @param string $descr Description.
      * @param string $unit Unit.
@@ -63,9 +69,10 @@ class Product {
      * @param float $vl_unit Value by unit.
      * @param float $vl_total Total value.
      */
-    public function __construct(int $id_user, int $id_type, string $cod, string $descr, string $unit, int $qtd, float $vl_unit, float $vl_total) {
+    public function __construct(int $id_user, int $id_type, string $type, string $cod, string $descr, string $unit, int $qtd, float $vl_unit, float $vl_total) {
         $this->id_user = $id_user;
         $this->id_type = $id_type;
+        $this->type = $type;
         $this->cod = $cod;
         $this->description = $descr;
         $this->unit = $unit;
@@ -142,5 +149,16 @@ class Product {
      */
     public function setId(int $id) {
         $this->id = $id;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize() {
+        return get_object_vars($this);
     }
 }

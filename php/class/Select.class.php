@@ -105,4 +105,63 @@ class Select {
         return null;
     }
 
+    // **************************************************************************
+    //                              CULTURAS
+    // **************************************************************************
+
+
+    /**
+     * Gets all cultures used in the system.
+     *
+     * @return array Array with Culture objects that contains informations about each culture.
+     */
+    public static function getCultures(): array {
+        $builder = new SQLBuilder(SQLBuilder::$SELECT);
+        $builder->setTables(['cultura', 'tipo_cultura']);
+        $builder->setColumns(['cultura.id', 'cultura.id_tipo', 'tipo_cultura.nome AS tipo', 'cultura.nome']);
+        $builder->setWhere('cultura.id_tipo = tipo_cultura.id');
+
+        $query = Query::getInstance()->exe($builder->__toString());
+
+        $array = [];
+        $i = 0;
+        if ($query->num_rows > 0) {
+            while ($obj = $query->fetch_object()) {
+                $array[$i++] = new Culture($obj->id, $obj->id_tipo, $obj->tipo, $obj->nome);
+            }
+        }
+
+        return $array;
+
+    }
+
+    // **************************************************************************
+    //                              ESTOQUE
+    // **************************************************************************
+
+
+    /**
+     * Gets informations about the user stock.
+     *
+     * @param int $id_user Given id user.
+     * @return array Array with Product objects that contains informations about each product in the stock.
+     */
+    public function getStock(int $id_user): array {
+        $builder = new SQLBuilder(SQLBuilder::$SELECT);
+        $builder->setTables(['estoque', 'tipo_prod']);
+        $builder->setColumns(['estoque.id', 'estoque.id_tipo', 'tipo_prod.nome_tipo AS tipo_prod', 'estoque.cod', 'estoque.descricao', 'estoque.unidade', 'estoque.qtd', 'estoque.vl_unitario', 'estoque.vl_total']);
+        $builder->setWhere('estoque.id_usuario = ' . $id_user . ' AND estoque.id_tipo = tipo_prod.id');
+
+        $query = Query::getInstance()->exe($builder->__toString());
+        $array = [];
+        $i = 0;
+
+        if ($query->num_rows > 0) {
+            while($obj = $query->fetch_object()) {
+                $array[$i++] = new Product($id_user, $obj->id_tipo, $obj->tipo_prod, $obj->cod, $obj->descricao, $obj->unidade, $obj->qtd, $obj->vl_unitario, $obj->vl_total);
+            }
+        }
+        return $array;
+    }
+
 }
