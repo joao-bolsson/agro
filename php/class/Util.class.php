@@ -28,4 +28,24 @@ class Util {
         return $retorno;
     }
 
+    /**
+     * Formats the given date (in d/m/Y format) to database date format (Y-m-d)
+     *
+     * @param string $data Given date.
+     * @return string Date formatted.
+     */
+    public static function dateFormat(string $data): string {
+        $array_data = explode('/', $data);
+
+        if (count($array_data) == 3) {
+            $retorno = "";
+            // Y-m-d
+            $retorno .= $array_data[2] . '-' . $array_data[1] . '-' . $array_data[0];
+            return $retorno;
+        } else {
+            return $data;
+        }
+    }
+
+
 }
