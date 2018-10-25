@@ -77,6 +77,7 @@ class Insert {
 
         $builder = new SQLBuilder(SQLBuilder::$INSERT);
         $builder->setTables(['safras']);
+        $builder->setColumns(['id', 'id_usuario', 'id_cultura', 'inicio']);
         $builder->setValues([NULL, $id_user, $id_cult, $dt_start]);
 
         Query::getInstance()->exe($builder->__toString());
