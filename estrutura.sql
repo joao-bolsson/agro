@@ -14,6 +14,12 @@ CREATE TABLE `colheita` (
   `transporte` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `cultura` (
+  `id` smallint(5) UNSIGNED NOT NULL,
+  `id_tipo` tinyint(3) UNSIGNED NOT NULL,
+  `nome` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `defensivo` (
   `id_manutencao` int(10) UNSIGNED NOT NULL,
   `id_prod` int(10) UNSIGNED NOT NULL,
@@ -50,11 +56,17 @@ CREATE TABLE `manutencao` (
 CREATE TABLE `safras` (
   `id` int(10) UNSIGNED NOT NULL,
   `id_usuario` int(10) UNSIGNED NOT NULL,
+  `id_cultura` smallint(5) UNSIGNED NOT NULL,
   `inicio` date NOT NULL,
   `fim` date DEFAULT NULL,
   `producao` int(10) UNSIGNED DEFAULT NULL,
   `saldo` int(10) UNSIGNED DEFAULT NULL,
   `total_venda` float DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `tipo_cultura` (
+  `id` tinyint(3) UNSIGNED NOT NULL,
+  `nome` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `tipo_prod` (
@@ -80,6 +92,10 @@ CREATE TABLE `usuario_permissoes` (
 ALTER TABLE `colheita`
   ADD KEY `id_safra` (`id_safra`);
 
+ALTER TABLE `cultura`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_tipo` (`id_tipo`);
+
 ALTER TABLE `defensivo`
   ADD PRIMARY KEY (`id_manutencao`,`id_prod`),
   ADD KEY `id_prod` (`id_prod`);
@@ -97,7 +113,11 @@ ALTER TABLE `manutencao`
 
 ALTER TABLE `safras`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `id_usuario` (`id_usuario`);
+  ADD KEY `id_usuario` (`id_usuario`),
+  ADD KEY `id_cultura` (`id_cultura`);
+
+ALTER TABLE `tipo_cultura`
+  ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `tipo_prod`
   ADD PRIMARY KEY (`id`);
@@ -109,15 +129,24 @@ ALTER TABLE `usuario_permissoes`
   ADD PRIMARY KEY (`id_usuario`);
 
 
+ALTER TABLE `cultura`
+  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 ALTER TABLE `estoque`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 ALTER TABLE `safras`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE `tipo_cultura`
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE `tipo_prod`
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 ALTER TABLE `usuario`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 ALTER TABLE `colheita`
   ADD CONSTRAINT `colheita_ibfk_1` FOREIGN KEY (`id_safra`) REFERENCES `safras` (`id`);
+
+ALTER TABLE `cultura`
+  ADD CONSTRAINT `cultura_ibfk_1` FOREIGN KEY (`id_tipo`) REFERENCES `tipo_cultura` (`id`);
 
 ALTER TABLE `defensivo`
   ADD CONSTRAINT `defensivo_ibfk_1` FOREIGN KEY (`id_manutencao`) REFERENCES `manutencao` (`id_safra`),
@@ -134,7 +163,8 @@ ALTER TABLE `manutencao`
   ADD CONSTRAINT `manutencao_ibfk_1` FOREIGN KEY (`id_safra`) REFERENCES `safras` (`id`);
 
 ALTER TABLE `safras`
-  ADD CONSTRAINT `safras_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`);
+  ADD CONSTRAINT `safras_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`),
+  ADD CONSTRAINT `safras_ibfk_2` FOREIGN KEY (`id_cultura`) REFERENCES `cultura` (`id`);
 
 ALTER TABLE `usuario_permissoes`
   ADD CONSTRAINT `usuario_permissoes_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`);

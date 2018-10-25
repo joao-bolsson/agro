@@ -32,7 +32,7 @@ class Connection {
      * @return array An array with the config specifies.
      */
     private static function getConfig(string $section): array {
-        $array = parse_ini_file(__DIR__ . "/../config.ini", true);
+        $array = parse_ini_file(__DIR__ . "/../../config.ini", true);
         return $array[$section];
     }
 

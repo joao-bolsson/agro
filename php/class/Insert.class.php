@@ -9,7 +9,7 @@
 ini_set('display_errors', true);
 error_reporting(E_ALL);
 
-require_once '../../defines.php';
+require_once __DIR__ . '/../../defines.php';
 
 spl_autoload_register(function (string $class_name) {
     include_once $class_name . '.class.php';
@@ -25,9 +25,9 @@ class Insert {
      *
      * @param string $name User name.
      * @param string $email User e-mail.
-     * @return int User id.
+     * @return string User password (without crypt).
      */
-    public static function insertUser(string $name, string $email): int {
+    public static function addUser(string $name, string $email): string {
         $name = Query::getInstance()->real_escape_string($name);
         $email = Query::getInstance()->real_escape_string($email);
 
@@ -41,7 +41,7 @@ class Insert {
 
         Query::getInstance()->exe($builder->__toString());
 
-        return Query::getInstance()->getInsertId();
+        return $p;
     }
 
     /**
@@ -52,7 +52,7 @@ class Insert {
      * @param bool $agr Permission for be an agronomist.
      * @param bool $coop Permission for be a cooperative.
      */
-    public static function insertPermissions(int $id_user, bool $farmer, bool $agr, bool $coop) {
+    public static function addPermissions(int $id_user, bool $farmer, bool $agr, bool $coop) {
         $builder = new SQLBuilder(SQLBuilder::$INSERT);
         $builder->setTables(['usuario_permissoes']);
         $builder->setValues([$id_user, $farmer, $agr, $coop]);
