@@ -5,21 +5,22 @@
  * @author João Bolsson (joaovictorbolsson@gmail.com)
  * @version 2018, Oct 24.
  */
+
 ini_set('display_errors', true);
 error_reporting(E_ALL);
 
 defined('MAIN_DATABASE') or define('MAIN_DATABASE', 'main');
 
-final class Conexao {
+class Connection {
 
     private $mysqli;
 
     private $server, $user, $password, $database;
     private static $INSTANCE;
 
-    public static function getInstance(): Conexao {
+    public static function getInstance(): Connection {
         if (empty(self::$INSTANCE)) {
-            self::$INSTANCE = new Conexao();
+            self::$INSTANCE = new Connection();
         }
         return self::$INSTANCE;
     }
