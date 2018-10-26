@@ -171,7 +171,6 @@ class Select {
      * @return string Type name.
      */
     public static function getProductTypeName(int $id_type): string {
-        // SELECT nome_tipo FROM tipo_prod WHERE id = 2;
         $builder = new SQLBuilder(SQLBuilder::$SELECT);
         $builder->setTables(['tipo_prod']);
         $builder->setColumns(['nome_tipo']);

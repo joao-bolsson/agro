@@ -80,9 +80,20 @@ switch ($form) {
         Insert::doMaintenance($id_crop, $labor, $machines);
         break;
 
-
     case 'applyDefensives':
-        // TODO
+        $id_crop = filter_input(INPUT_POST, 'id_crop');
+        $id_def = filter_input(INPUT_POST, 'id_defensives', FILTER_DEFAULT, FILTER_FORCE_ARRAY);
+        $apli = filter_input(INPUT_POST, 'aplications', FILTER_DEFAULT, FILTER_FORCE_ARRAY);
+        $values = filter_input(INPUT_POST, 'values', FILTER_DEFAULT, FILTER_FORCE_ARRAY);
+
+        $defensives = [];
+        $size = count($id_def);
+        for ($i = 0; $i < $size; $i++) {
+            $defensives[$i] = new Defensive($id_def[$i], $apli[$i], $values[$i]);
+            $i++;
+        }
+
+        Insert::applyDefensives($id_crop, $defensives);
         break;
 
     case 'doHarvest':
