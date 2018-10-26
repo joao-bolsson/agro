@@ -146,7 +146,7 @@ class Select {
      * @param int $id_user Given id user.
      * @return array Array with Product objects that contains informations about each product in the stock.
      */
-    public function getStock(int $id_user): array {
+    public static function getStock(int $id_user): array {
         $builder = new SQLBuilder(SQLBuilder::$SELECT);
         $builder->setTables(['estoque', 'tipo_prod']);
         $builder->setColumns(['estoque.id', 'estoque.id_tipo', 'tipo_prod.nome_tipo AS tipo_prod', 'estoque.cod', 'estoque.descricao', 'estoque.unidade', 'estoque.qtd', 'estoque.vl_unitario', 'estoque.vl_total']);
@@ -157,11 +157,32 @@ class Select {
         $i = 0;
 
         if ($query->num_rows > 0) {
-            while($obj = $query->fetch_object()) {
+            while ($obj = $query->fetch_object()) {
                 $array[$i++] = new Product($id_user, $obj->id_tipo, $obj->tipo_prod, $obj->cod, $obj->descricao, $obj->unidade, $obj->qtd, $obj->vl_unitario, $obj->vl_total);
             }
         }
         return $array;
+    }
+
+    /**
+     * Gets the product type name by given id.
+     *
+     * @param int $id_type Given id type.
+     * @return string Type name.
+     */
+    public static function getProductTypeName(int $id_type): string {
+        // SELECT nome_tipo FROM tipo_prod WHERE id = 2;
+        $builder = new SQLBuilder(SQLBuilder::$SELECT);
+        $builder->setTables(['tipo_prod']);
+        $builder->setColumns(['nome_tipo']);
+        $builder->setWhere('id=' . $id_type);
+
+        $query = Query::getInstance()->exe($builder->__toString());
+        if ($query->num_rows > 0) {
+            $obj = $query->fetch_object();
+            return $obj->nome_tipo;
+        }
+        return "";
     }
 
 }

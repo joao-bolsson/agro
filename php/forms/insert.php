@@ -108,7 +108,19 @@ switch ($form) {
         break;
 
     case 'addProductItem':
-        // TODO
+        $id_user = filter_input(INPUT_POST, 'id_crop'); // pode pegar pela sessão
+        $id_type = filter_input(INPUT_POST, 'id_type');
+        $type = Select::getProductTypeName($id_type);
+        $cod = filter_input(INPUT_POST, 'cod');
+        $descr = filter_input(INPUT_POST, 'descr');
+        $unit = filter_input(INPUT_POST, 'unit');
+        $qtd = filter_input(INPUT_POST, 'qtd');
+        $vl_unit = filter_input(INPUT_POST, 'vl_unit');
+
+        $vl_total = $vl_unit * $qtd;
+        $prod = new Product($id_user, $id_type, $type, $cod, $descr, $unit, $qtd, $vl_unit, $vl_total);
+
+        Insert::addProductItem([$prod]);
         break;
 
     default:
