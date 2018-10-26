@@ -77,7 +77,44 @@ class Select {
     //                              MANUTENÇÃO
     // **************************************************************************
 
-    // TODO
+    /**
+     * Gets informations about the maintenance proccess.
+     *
+     * @param int $id_crop Crop id.
+     * @return Maintenance Object with needed informations.
+     */
+    public static function getInfoMaintenance(int $id_crop): Maintenance {
+        $builder = new SQLBuilder(SQLBuilder::$SELECT);
+        $builder->setTables(['manutencao']);
+        $builder->setColumns(['mao_de_obra', 'maquinario']);
+        $builder->setWhere('id_safra=' . $id_crop);
+
+        $query = Query::getInstance()->exe($builder->__toString());
+        if ($query->num_rows > 0) {
+            $obj = $query->fetch_object();
+
+            $info = new Maintenance($id_crop, $obj->mao_de_obra, $obj->maquinario);
+
+            $builder->setTables(['defensivo']);
+            $builder->setColumns(['id_manutencao', 'id_prod', 'aplicacoes', 'valor']);
+            $builder->setWhere('id_manutencao=' . $id_crop);
+
+            $query = Query::getInstance()->exe($builder->__toString());
+            if ($query->num_rows > 0) {
+                $defensives = [];
+                $i = 0;
+                while ($obj = $query->fetch_object()) {
+                    $defensives[$i++] = new Defensive($obj->id_prod, $obj->aplicacoes, $obj->valor);
+                }
+
+                $info->setDefensives($defensives);
+            }
+
+            $info->update();
+            return $info;
+        }
+        return null;
+    }
 
     // **************************************************************************
     //                              COLHEITA
