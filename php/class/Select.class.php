@@ -169,7 +169,26 @@ class Select {
         }
 
         return $array;
+    }
 
+    /**
+     * @return array All culture types objects used in the system.
+     */
+    public static function getCultureTypes(): array {
+        $builder = new SQLBuilder(SQLBuilder::$SELECT);
+        $builder->setTables(['tipo_cultura']);
+        $builder->setColumns(['id', 'nome']);
+
+        $query = Query::getInstance()->exe($builder->__toString());
+
+        $types = [];
+        if ($query->num_rows > 0) {
+            $i = 0;
+            while ($obj = $query->fetch_object()) {
+                $types[$i++] = new CultureType($obj->id, $obj->nome);
+            }
+        }
+        return $types;
     }
 
     // **************************************************************************
